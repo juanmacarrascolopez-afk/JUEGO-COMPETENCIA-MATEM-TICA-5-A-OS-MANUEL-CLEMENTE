@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aventura Lógico-Matemática</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Fredoka & Nunito -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            font-family: 'Fredoka', 'Nunito', cursive, sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        body {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Responsive Bounce Animation for Kids */
+        .bounce-hover:hover {
+            transform: scale(1.08) translate<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aventura Lógico-Matemática</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Fredoka & Nunito -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+    
+    <style>Y(-4px);
+        }
+        
+        .bounce-active:active {
+            transform: scale(0.95);
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        .pulse-slow {
+            animation: pulseSlow 2s infinite;
+        }
+
+        @keyframes pulseSlow {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Glassmorphism style cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border: 4px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 20px 30px rgba(0,0,0,0.1);
+        }
+
+        .btn-3d {
+            box-shadow: 0px 8px 0px 0px rgba(0, 0, 0, 0.15);
+            transition: all 0.1s ease;
+        }
+
+        .btn-3d:active {
+            box-shadow: 0px 2px 0px 0px rgba(0, 0, 0, 0.15);
+            transform: translateY(6px);
+        }
+
+        /* Custom Confetti Canvas Overlay */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        /* Drop target visual effects */
+        .drop-zone-active {
+            border-style: dashed !important;
+            border-color: #3b82f6 !important;
+            background-color: rgba(219, 234, 254, 0.8) !important;
+            transform: scale(1.03);
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen justify-between p-2 sm:p-4 text-slate-800">
+
+    <!-- Confetti Overlay -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Header & Score Bar -->
+    <header class="w-full max-w-4xl mx-auto flex items-center justify-between p-3 bg-white/90 rounded-3xl shadow-lg border-4 border-yellow-300 mb-2 sm:mb-4 z-10">
+        <button id="home-btn" onclick="showMenu()" class="bg-amber-400 hover:bg-amber-500 text-white p-2 sm:p-3 rounded-2xl text-xl sm:text-2xl transition bounce-hover bounce-active flex items-center gap-2 shadow-md">
+            <i class="fa-solid fa-house"></i>
+            <span class="text-sm sm:text-base font-extrabold hidden sm:inline">Menú</span>
+        </button>
+
+        <!-- Current Mini-Game Title -->
+        <h1 id="game-title" class="text-xl sm:text-3xl font-extrabold text-indigo-600 text-center tracking-wide drop-shadow">
+            ¡Matemáticas Mágicas!
+        </h1>
+
+        <!-- Stars Counter & Audio Instruction Button -->
+        <div class="flex items-center gap-2 sm:gap-3">
+            <button id="speaker-btn" onclick="speakCurrentInstruction()" class="bg-blue-400 hover:bg-blue-500 text-white p-2 sm:p-3 rounded-2xl text-xl sm:text-2xl transition bounce-hover bounce-active shadow-md pulse-slow" title="Escuchar instrucción">
+                <i class="fa-solid fa-volume-high"></i>
+            </button>
+            <div class="bg-amber-100 border-2 border-amber-300 px-3 py-1.5 rounded-2xl flex items-center gap-1.5 shadow-inner">
+                <i class="fa-solid fa-star text-amber-500 text-2xl sm:text-3xl animate-bounce"></i>
+                <span id="star-count" class="text-2xl sm:text-3xl font-black text-amber-600">0</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main id="main-container" class="w-full max-w-4xl mx-auto flex-grow flex flex-col justify-center items-center z-10 my-auto">
+        
+        <!-- MENU PRINCIPAL -->
+        <div id="view-menu" class="w-full grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 p-2">
+            
+            <!-- Game Card 1: Contar Objetos -->
+            <button onclick="startGame(1)" class="glass-card p-6 rounded-3xl border-b-8 border-pink-400 hover:border-pink-500 transition bounce-hover bounce-active flex flex-col items-center text-center group cursor-pointer">
+                <div class="w-20 h-20 sm:w-24 sm:h-24 bg-pink-100 rounded-full flex items-center justify-center text-4xl sm:text-5xl text-pink-500 mb-4 group-hover:rotate-12 transition">
+                    🍎 🐶 ⭐️
+                </div>
+                <h2 class="text-2xl font-black text-pink-600 mb-1">1. Contar Objetos</h2>
+                <p class="text-slate-600 font-semibold text-sm sm:text-base">¿Cuántos objetos ves aquí? ¡Cuenta y elige!</p>
+            </button>
+
+            <!-- Game Card 2: Secuencias y Patrones -->
+            <button onclick="startGame(2)" class="glass-card p-6 rounded-3xl border-b-8 border-purple-400 hover:border-purple-500 transition bounce-hover bounce-active flex flex-col items-center text-center group cursor-pointer">
+                <div class="w-20 h-20 sm:w-24 sm:h-24 bg-purple-100 rounded-full flex items-center justify-center text-4xl sm:text-5xl text-purple-500 mb-4 group-hover:rotate-12 transition">
+                    🔴 🔵 🔴 ❓
+                </div>
+                <h2 class="text-2xl font-black text-purple-600 mb-1">2. Patrones y Series</h2>
+                <p class="text-slate-600 font-semibold text-sm sm:text-base">¿Qué color o figura sigue la serie?</p>
+            </button>
+
+            <!-- Game Card 3: Mayor, Menor o Igual -->
+            <button onclick="startGame(3)" class="glass-card p-6 rounded-3xl border-b-8 border-emerald-400 hover:border-emerald-500 transition bounce-hover bounce-active flex flex-col items-center text-center group cursor-pointer">
+                <div class="w-20 h-20 sm:w-24 sm:h-24 bg-emerald-100 rounded-full flex items-center justify-center text-4xl sm:text-5xl text-emerald-500 mb-4 group-hover:rotate-12 transition">
+                    ⚖️ 🍌 🆚 🍎
+                </div>
+                <h2 class="text-2xl font-black text-emerald-600 mb-1">3. ¿Dónde hay más?</h2>
+                <p class="text-slate-600 font-semibold text-sm sm:text-base">Compara los dos grupos de divertidos elementos.</p>
+            </button>
+
+            <!-- Game Card 4: Clasificación por Forma -->
+            <button onclick="startGame(4)" class="glass-card p-6 rounded-3xl border-b-8 border-cyan-400 hover:border-cyan-500 transition bounce-hover bounce-active flex flex-col items-center text-center group cursor-pointer">
+                <div class="w-20 h-20 sm:w-24 sm:h-24 bg-cyan-100 rounded-full flex items-center justify-center text-4xl sm:text-5xl text-cyan-500 mb-4 group-hover:rotate-12 transition">
+                    🟦 🔺 🟡
+                </div>
+                <h2 class="text-2xl font-black text-cyan-600 mb-1">4. Clasificar Formas</h2>
+                <p class="text-slate-600 font-semibold text-sm sm:text-base">Pon cada figura geométrica en su caja correcta.</p>
+            </button>
+
+        </div>
+
+        <!-- GAME CONTAINER (Se activa al elegir un minijuego) -->
+        <div id="view-game" class="w-full glass-card p-4 sm:p-6 rounded-3xl flex flex-col items-center hidden min-h-[420px] justify-between relative">
+            
+            <!-- Question/Instruction Banner -->
+            <div class="bg-indigo-100 border-2 border-indigo-300 rounded-2xl p-3 sm:p-4 w-full text-center mb-4 flex items-center justify-center gap-3">
+                <button onclick="speakCurrentInstruction()" class="text-indigo-600 hover:text-indigo-800 text-2xl transition">
+                    <i class="fa-solid fa-circle-play"></i>
+                </button>
+                <p id="instruction-text" class="text-lg sm:text-2xl font-extrabold text-indigo-900">
+                    Cargando instrucción...
+                </p>
+            </div>
+
+            <!-- Dynamic Interactive Game Board -->
+            <div id="game-board" class="w-full flex-grow flex flex-col items-center justify-center py-2">
+                <!-- Se llena dinámicamente con JavaScript -->
+            </div>
+
+            <!-- Feedback Message Banner -->
+            <div id="feedback-banner" class="h-12 flex items-center justify-center text-xl sm:text-2xl font-black transition-all duration-300 transform scale-0">
+                <!-- Muestra mensajes como "¡Excelente! 🌟" o "¡Inténtalo otra vez! 💪" -->
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full text-center text-slate-500 font-semibold py-2 text-xs sm:text-sm z-10">
+        Juego Educativo Lógico-Matemático para Niños • 5 Años
+    </footer>
+
+    <script>
+        // Audio Synth Engine (Sin archivos de sonido externos)
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new AudioContext();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // Sound Effects Generators
+        function playSound(type) {
+            try {
+                initAudio();
+                const now = audioCtx.currentTime;
+
+                if (type === 'correct') {
+                    // Win chime sound (Arpeggio)
+                    const freqs = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                    freqs.forEach((f, i) => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.value = f;
+                        gain.gain.setValueAtTime(0.15, now + i * 0.08);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.3);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start(now + i * 0.08);
+                        osc.stop(now + i * 0.08 + 0.3);
+                    });
+                } else if (type === 'wrong') {
+                    // Soft incorrect pop tone
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.exponentialRampToValueAtTime(110, now + 0.25);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.25);
+                } else if (type === 'click') {
+                    // Subtle button tap
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, now);
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.05);
+                } else if (type === 'fanfare') {
+                    // Celebration fanfare
+                    const notes = [440, 554.37, 659.25, 880];
+                    notes.forEach((f, i) => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'square';
+                        osc.frequency.value = f;
+                        gain.gain.setValueAtTime(0.1, now + i * 0.12);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.12 + 0.4);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start(now + i * 0.12);
+                        osc.stop(now + i * 0.12 + 0.4);
+                    });
+                }
+            } catch (e) {
+                console.log("Audio not supported or permitted yet");
+            }
+        }
+
+        // Text-To-Speech Narrator Function
+        let currentInstructionText = "";
+
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Stop current speaking
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'es-ES';
+                utterance.rate = 0.9; // Slightly slower for kids
+                utterance.pitch = 1.2; // Friendly pitch
+                
+                // Try to find a Spanish voice
+                const voices = window.speechSynthesis.getVoices();
+                const esVoice = voices.find(v => v.lang.startsWith('es'));
+                if (esVoice) utterance.voice = esVoice;
+
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function speakCurrentInstruction() {
+            if (currentInstructionText) {
+                speakText(currentInstructionText);
+            } else {
+                speakText("¡Bienvenido a Matemáticas Mágicas! Elige un juego para comenzar.");
+            }
+        }
+
+        // Global Game State Variables
+        let currentGameMode = 0; // 1, 2, 3 or 4
+        let score = 0;
+        let currentAnswer = null;
+        let isProcessing = false;
+
+        // Elements
+        const viewMenu = document.getElementById('view-menu');
+        const viewGame = document.getElementById('view-game');
+        const gameTitle = document.getElementById('game-title');
+        const instructionText = document.getElementById('instruction-text');
+        const gameBoard = document.getElementById('game-board');
+        const feedbackBanner = document.getElementById('feedback-banner');
+        const starCount = document.getElementById('star-count');
+
+        // Navigation Functions
+        function showMenu() {
+            playSound('click');
+            currentGameMode = 0;
+            viewGame.classList.add('hidden');
+            viewMenu.classList.remove('hidden');
+            gameTitle.innerText = "¡Matemáticas Mágicas!";
+            currentInstructionText = "¡Bienvenido! Elige un minijuego para aprender y jugar.";
+            speakCurrentInstruction();
+        }
+
+        function startGame(mode) {
+            playSound('click');
+            currentGameMode = mode;
+            viewMenu.classList.add('hidden');
+            viewGame.classList.remove('hidden');
+            
+            const titles = {
+                1: "1. Contar Objetos",
+                2: "2. Patrones Lógicos",
+                3: "3. Comparar Cantidades",
+                4: "4. Clasificar Formas"
+            };
+            gameTitle.innerText = titles[mode];
+            loadNextQuestion();
+        }
+
+        function addStar() {
+            score++;
+            starCount.innerText = score;
+            launchConfetti();
+        }
+
+        function loadNextQuestion() {
+            isProcessing = false;
+            feedbackBanner.className = "h-12 flex items-center justify-center text-xl sm:text-2xl font-black transition-all duration-300 transform scale-0";
+            gameBoard.innerHTML = "";
+
+            switch(currentGameMode) {
+                case 1:
+                    setupCountGame();
+                    break;
+                case 2:
+                    setupPatternsGame();
+                    break;
+                case 3:
+                    setupComparisonGame();
+                    break;
+                case 4:
+                    setupSortingGame();
+                    break;
+            }
+        }
+
+        // --- MINIJUEGO 1: CONTAR OBJETOS ---
+        function setupCountGame() {
+            const emojis = ['🍎', '🐶', '⭐️', '🚗', '🐱', '🌸', '🎈', '🐸', '🍦', '🐝'];
+            const targetEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+            const targetCount = Math.floor(Math.random() * 8) + 1; // 1 to 8 for 5yr olds
+            currentAnswer = targetCount;
+
+            currentInstructionText = `¿Cuántos elementos ves en la pantalla? ¡Cuéntalos!`;
+            instructionText.innerText = `¿Cuántos ${targetEmoji} ves aquí?`;
+            speakCurrentInstruction();
+
+            // Render Items Grid
+            const itemsContainer = document.createElement('div');
+            itemsContainer.className = "flex flex-wrap items-center justify-center gap-3 sm:gap-5 max-w-lg mb-8 p-4 bg-white/60 rounded-3xl min-h-[160px]";
+            
+            for (let i = 0; i < targetCount; i++) {
+                const item = document.createElement('span');
+                item.className = "text-4xl sm:text-6xl floating hover:scale-125 transition duration-200 cursor-pointer";
+                item.style.animationDelay = `${i * 0.15}s`;
+                item.innerText = targetEmoji;
+                item.onclick = () => playSound('click');
+                itemsContainer.appendChild(item);
+            }
+
+            // Render Number Buttons (4 Options)
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = "grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 w-full max-w-md";
+
+            // Generate options including correct answer
+            let options = [targetCount];
+            while (options.length < 4) {
+                let randomOpt = Math.floor(Math.random() * 9) + 1;
+                if (!options.includes(randomOpt)) options.push(randomOpt);
+            }
+            options.sort((a, b) => a - b);
+
+            options.forEach(num => {
+                const btn = document.createElement('button');
+                btn.className = "bg-amber-400 hover:bg-amber-500 text-white font-black text-3xl sm:text-4xl py-3 rounded-2xl border-b-4 border-amber-600 btn-3d bounce-hover bounce-active";
+                btn.innerText = num;
+                btn.onclick = () => checkAnswer(num);
+                optionsContainer.appendChild(btn);
+            });
+
+            gameBoard.appendChild(itemsContainer);
+            gameBoard.appendChild(optionsContainer);
+        }
+
+        // --- MINIJUEGO 2: PATRONES Y SECUENCIAS ---
+        function setupPatternsGame() {
+            const patternTypes = [
+                ['🔴', '🔵'],
+                ['⭐', '🌙'],
+                ['🍎', '🍌'],
+                ['🐱', '🐶'],
+                ['🔺', '🟦']
+            ];
+
+            const pair = patternTypes[Math.floor(Math.random() * patternTypes.length)];
+            const seqLength = 5; // A-B-A-B-?
+            let sequence = [];
+            for (let i = 0; i < seqLength - 1; i++) {
+                sequence.push(pair[i % 2]);
+            }
+            
+            // Expected next item
+            currentAnswer = pair[(seqLength - 1) % 2];
+
+            currentInstructionText = "¿Qué figura o color completa el patrón?";
+            instructionText.innerText = "¡Sigue la serie! ¿Cuál falta al final?";
+            speakCurrentInstruction();
+
+            // Render Sequence Row
+            const seqContainer = document.createElement('div');
+            seqContainer.className = "flex items-center justify-center gap-2 sm:gap-4 mb-8 bg-white/60 p-4 sm:p-6 rounded-3xl w-full max-w-xl overflow-x-auto";
+
+            sequence.forEach(symbol => {
+                const box = document.createElement('div');
+                box.className = "w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-2xl flex items-center justify-center text-2xl sm:text-4xl shadow-md border-2 border-indigo-200";
+                box.innerText = symbol;
+                seqContainer.appendChild(box);
+            });
+
+            // Missing Item Placeholder
+            const missingBox = document.createElement('div');
+            missingBox.className = "w-12 h-12 sm:w-16 sm:h-16 bg-yellow-200 border-4 border-dashed border-amber-400 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl font-bold text-amber-600 animate-pulse";
+            missingBox.innerText = "?";
+            seqContainer.appendChild(missingBox);
+
+            // Options (The 2 pattern items + 2 random emojis)
+            const extraOptions = ['🟢', '🍕', '🚗', '💜'].filter(e => !pair.includes(e));
+            let options = [...pair, extraOptions[0], extraOptions[1]];
+            options = options.sort(() => Math.random() - 0.5);
+
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = "flex flex-wrap justify-center gap-4 w-full max-w-md";
+
+            options.forEach(symbol => {
+                const btn = document.createElement('button');
+                btn.className = "w-16 h-16 sm:w-20 sm:h-20 bg-purple-500 hover:bg-purple-600 text-white rounded-2xl flex items-center justify-center text-3xl sm:text-4xl border-b-4 border-purple-700 btn-3d bounce-hover bounce-active";
+                btn.innerText = symbol;
+                btn.onclick = () => checkAnswer(symbol);
+                optionsContainer.appendChild(btn);
+            });
+
+            gameBoard.appendChild(seqContainer);
+            gameBoard.appendChild(optionsContainer);
+        }
+
+        // --- MINIJUEGO 3: MAYOR / MENOR / IGUAL ---
+        function setupComparisonGame() {
+            const emojis = ['🎈', '🍓', '🐝', '⭐', '🐟'];
+            const chosenEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+
+            // Generate two amounts
+            let countA = Math.floor(Math.random() * 6) + 1;
+            let countB = Math.floor(Math.random() * 6) + 1;
+
+            // Prompt Type: 'more' (dónde hay más) or 'less' (dónde hay menos) or 'equal'
+            const modeType = Math.random() < 0.5 ? 'more' : 'less';
+
+            if (modeType === 'more') {
+                currentInstructionText = "Toca el grupo que tiene MÁS elementos.";
+                instructionText.innerText = "¿Dónde hay MÁS elementos? ⬆️";
+                currentAnswer = countA > countB ? 'A' : (countB > countA ? 'B' : 'equal');
+            } else {
+                currentInstructionText = "Toca el grupo que tiene MENOS elementos.";
+                instructionText.innerText = "¿Dónde hay MENOS elementos? ⬇️";
+                currentAnswer = countA < countB ? 'A' : (countB < countA ? 'B' : 'equal');
+            }
+
+            speakCurrentInstruction();
+
+            // Main Container
+            const compareContainer = document.createElement('div');
+            compareContainer.className = "grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl mb-4";
+
+            // Group A Button
+            const groupA = document.createElement('button');
+            groupA.className = "bg-emerald-100 hover:bg-emerald-200 border-4 border-emerald-400 rounded-3xl p-4 flex flex-wrap items-center justify-center gap-2 min-h-[140px] transition bounce-hover bounce-active";
+            for(let i=0; i<countA; i++) groupA.innerHTML += `<span class="text-3xl sm:text-4xl">${chosenEmoji}</span>`;
+            groupA.onclick = () => checkAnswer('A');
+
+            // Group B Button
+            const groupB = document.createElement('button');
+            groupB.className = "bg-teal-100 hover:bg-teal-200 border-4 border-teal-400 rounded-3xl p-4 flex flex-wrap items-center justify-center gap-2 min-h-[140px] transition bounce-hover bounce-active";
+            for(let i=0; i<countB; i++) groupB.innerHTML += `<span class="text-3xl sm:text-4xl">${chosenEmoji}</span>`;
+            groupB.onclick = () => checkAnswer('B');
+
+            compareContainer.appendChild(groupA);
+            compareContainer.appendChild(groupB);
+
+            // Equal Button Option if both are same
+            const equalBtn = document.createElement('button');
+            equalBtn.className = "w-full max-w-xs bg-cyan-500 hover:bg-cyan-600 text-white font-extrabold text-xl py-3 rounded-2xl border-b-4 border-cyan-700 btn-3d bounce-hover bounce-active mt-2";
+            equalBtn.innerText = "¡Tienen la misma cantidad! (Igual) ⚖️";
+            equalBtn.onclick = () => checkAnswer('equal');
+
+            gameBoard.appendChild(compareContainer);
+            if (countA === countB) {
+                currentAnswer = 'equal';
+            }
+            gameBoard.appendChild(equalBtn);
+        }
+
+        // --- MINIJUEGO 4: CLASIFICACIÓN POR FORMA ---
+        function setupSortingGame() {
+            // Target categories: Circle, Square, Triangle
+            const shapeTypes = [
+                { id: 'circle', name: 'Círculos', icon: '🔴', items: ['🔴', '🟡', '🟢', '⚽', '🟠'] },
+                { id: 'square', name: 'Cuadrados', icon: '🟦', items: ['🟦', '🟩', '🟨', '📦', '⬛'] },
+                { id: 'triangle', name: 'Triángulos', icon: '🔺', items: ['🔺', '📐', '🔻', '🍕', '🚩'] }
+            ];
+
+            // Pick 2 target bins for simplicity in 5yr olds
+            const selectedBins = shapeTypes.sort(() => Math.random() - 0.5).slice(0, 2);
+
+            // Pick 1 current active shape to classify
+            const targetBin = selectedBins[Math.floor(Math.random() * selectedBins.length)];
+            const activeSymbol = targetBin.items[Math.floor(Math.random() * targetBin.items.length)];
+
+            currentAnswer = targetBin.id;
+            currentInstructionText = `¿En qué caja va esta figura? Tocala o elige su caja.`;
+            instructionText.innerText = `¿A qué grupo pertenece esta figura?`;
+            speakCurrentInstruction();
+
+            // Display Active Item
+            const activeItemBox = document.createElement('div');
+            activeItemBox.className = "w-24 h-24 sm:w-28 sm:h-28 bg-white rounded-3xl border-4 border-dashed border-cyan-400 flex items-center justify-center text-5xl sm:text-6xl mb-6 shadow-lg floating";
+            activeItemBox.innerText = activeSymbol;
+
+            // Bins Container
+            const binsContainer = document.createElement('div');
+            binsContainer.className = "grid grid-cols-2 gap-4 sm:gap-8 w-full max-w-lg";
+
+            selectedBins.forEach(bin => {
+                const binBtn = document.createElement('button');
+                binBtn.className = "bg-white/80 hover:bg-white border-4 border-cyan-300 hover:border-cyan-500 rounded-3xl p-4 flex flex-col items-center gap-2 shadow-md transition bounce-hover bounce-active";
+                binBtn.innerHTML = `
+                    <span class="text-4xl sm:text-5xl">${bin.icon}</span>
+                    <span class="text-xl font-black text-cyan-800">${bin.name}</span>
+                `;
+                binBtn.onclick = () => checkAnswer(bin.id);
+                binsContainer.appendChild(binBtn);
+            });
+
+            gameBoard.appendChild(activeItemBox);
+            gameBoard.appendChild(binsContainer);
+        }
+
+        function checkAnswer(userAnswer) {
+            if (isProcessing) return;
+            isProcessing = true;
+
+            if (userAnswer === currentAnswer) {
+                // Correct Answer
+                playSound('correct');
+                addStar();
+                
+                feedbackBanner.innerText = "¡Excelente! 🌟 ¡Muy bien!";
+                feedbackBanner.className = "h-12 flex items-center justify-center text-2xl sm:text-3xl font-black text-emerald-600 transition-all duration-300 transform scale-100";
+
+                speakText("¡Excelente! ¡Lo has hecho muy bien!");
+
+                setTimeout(() => {
+                    loadNextQuestion();
+                }, 1800);
+
+            } else {
+                // Incorrect Answer
+                playSound('wrong');
+                feedbackBanner.innerText = "¡Inténtalo otra vez! 💪";
+                feedbackBanner.className = "h-12 flex items-center justify-center text-2xl sm:text-3xl font-black text-rose-500 transition-all duration-300 transform scale-100";
+
+                speakText("¡Casi! Inténtalo otra vez.");
+
+                setTimeout(() => {
+                    feedbackBanner.className = "h-12 flex items-center justify-center text-xl sm:text-2xl font-black transition-all duration-300 transform scale-0";
+                    isProcessing = false;
+                }, 1400);
+            }
+        }
+
+        // Canvas Confetti Effect
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const ctx = confettiCanvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function launchConfetti() {
+            particles = [];
+            const colors = ['#f43f5e', '#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899'];
+            
+            for (let i = 0; i < 60; i++) {
+                particles.push({
+                    x: window.innerWidth / 2,
+                    y: window.innerHeight / 2,
+                    vx: (Math.random() - 0.5) * 12,
+                    vy: (Math.random() - 0.7) * 12,
+                    size: Math.random() * 10 + 6,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    rotation: Math.random() * 360,
+                    rotationSpeed: (Math.random() - 0.5) * 10,
+                    opacity: 1
+                });
+            }
+            animateConfetti();
+        }
+
+        let animationFrameId = null;
+        function animateConfetti() {
+            ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            let activeParticles = 0;
+
+            particles.forEach(p => {
+                if (p.opacity > 0) {
+                    activeParticles++;
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.25; // gravity
+                    p.opacity -= 0.015;
+                    p.rotation += p.rotationSpeed;
+
+                    ctx.save();
+                    ctx.globalAlpha = Math.max(0, p.opacity);
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate((p.rotation * Math.PI) / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                    ctx.restore();
+                }
+            });
+
+            if (activeParticles > 0) {
+                animationFrameId = requestAnimationFrame(animateConfetti);
+            } else {
+                ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            }
+        }
+
+        window.onload = () => {
+            // Warm up TTS voices
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.getVoices();
+            }
+            showMenu();
+        };
+    </script>
+</body>
+</html>
